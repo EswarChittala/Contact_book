@@ -11,10 +11,12 @@ export default function App() {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [total, setTotal] = useState(0)
-  const limit = 6
+  const [isLoading, setIsLoading] = useState(true)
+  const limit = 5  // Changed from 6 to 5 for 5 contacts per page
 
   async function fetchContacts(p = page) {
     try {
+      setIsLoading(true)
       const res = await fetch(`${API_BASE}/contacts?page=${p}&limit=${limit}`)
       const json = await res.json()
       setContacts(json.data || [])
@@ -22,12 +24,16 @@ export default function App() {
       setTotalPages(json.totalPages || 1)
       setTotal(json.total || 0)
     } catch (err) {
-      console.error(err)
-      alert('Failed to load contacts')
+      console.error('Failed to load contacts:', err)
+      alert('Failed to load contacts. Please try again later.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
-  useEffect(() => { fetchContacts(1) }, [])
+  useEffect(() => { 
+    fetchContacts(1) 
+  }, [])
 
   async function addContact(contact) {
     try {
@@ -38,42 +44,71 @@ export default function App() {
       })
       if(!res.ok) {
         const e = await res.json()
-        throw new Error(e.error || 'Failed')
+        throw new Error(e.error || 'Failed to add contact')
       }
-      fetchContacts(1)
+      fetchContacts(1) // Reset to first page after adding
+      return true
     } catch (err) {
       alert(err.message)
+      return false
     }
   }
 
   async function deleteContact(id) {
-    if(!confirm('Delete this contact?')) return
     try {
       const res = await fetch(`${API_BASE}/contacts/${id}`, { method:'DELETE' })
       if(!res.ok) throw new Error('Delete failed')
-      fetchContacts(page)
+      
+      // If we're on the last page and it's now empty after deletion, go to previous page
+      if (contacts.length === 1 && page > 1) {
+        fetchContacts(page - 1)
+      } else {
+        fetchContacts(page)
+      }
     } catch (err) {
       alert(err.message)
     }
   }
 
   return (
-    <div className="container">
-      <h1>Contact Book</h1>
-      <div className="card">
-        <ContactForm onAdd={addContact}/>
-      </div>
-      <div className="card">
-        <ContactList
-          contacts={contacts}
-          page={page}
-          total={total}
-          totalPages={totalPages}
-          onPrev={()=> page>1 && fetchContacts(page-1)}
-          onNext={()=> page<totalPages && fetchContacts(page+1)}
-          onDelete={deleteContact}
-        />
-      </div>
+    <div className="app-container">
+      <header className="app-header">
+        <h1>Contact Book</h1>
+        <p>Manage your contacts easily</p>
+      </header>
+      
+      <main className="app-main">
+        <section className="form-section">
+          <div className="card">
+            <ContactForm onAdd={addContact}/>
+          </div>
+        </section>
+        
+        <section className="list-section">
+          <div className="card">
+            {isLoading && contacts.length === 0 ? (
+              <div className="loading-state">
+                <div className="spinner"></div>
+                <p>Loading contacts...</p>
+              </div>
+            ) : (
+              <ContactList
+                contacts={contacts}
+                page={page}
+                total={total}
+                totalPages={totalPages}
+                onPrev={()=> page > 1 && fetchContacts(page - 1)}
+                onNext={()=> page < totalPages && fetchContacts(page + 1)}
+                onDelete={deleteContact}
+              />
+            )}
+          </div>
+        </section>
+      </main>
+      
+      <footer className="app-footer">
+        <p>© {new Date().getFullYear()} Contact Book App</p>
+      </footer>
     </div>
   )
 }
