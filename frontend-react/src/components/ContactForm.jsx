@@ -79,9 +79,14 @@ export default function ContactForm({ onAdd }) {
         {isSubmitting ? (
           <>
             <span className="spinner"></span>
-            Adding...
+            Adding Contact...
           </>
-        ) : 'Add Contact'}
+        ) : (
+          <>
+            <span>✨</span>
+            Add Contact
+          </>
+        )}
       </button>
       
       {error && <div className="error-message">{error}</div>}

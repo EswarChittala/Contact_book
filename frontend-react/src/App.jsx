@@ -74,7 +74,7 @@ export default function App() {
     <div className="app-container">
       <header className="app-header">
         <h1>Contact Book</h1>
-        <p>Manage your contacts easily</p>
+        <p>Manage your contacts with style and ease</p>
       </header>
       
       <main className="app-main">
@@ -89,7 +89,7 @@ export default function App() {
             {isLoading && contacts.length === 0 ? (
               <div className="loading-state">
                 <div className="spinner"></div>
-                <p>Loading contacts...</p>
+                <p>Loading your contacts...</p>
               </div>
             ) : (
               <ContactList
@@ -107,7 +107,7 @@ export default function App() {
       </main>
       
       <footer className="app-footer">
-        <p>© {new Date().getFullYear()} Contact Book App</p>
+        <p>© {new Date().getFullYear()} Contact Book App - Built with ❤️</p>
       </footer>
     </div>
   )

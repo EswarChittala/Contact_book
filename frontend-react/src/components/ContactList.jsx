@@ -20,9 +20,9 @@ export default function ContactList({ contacts, page, total, totalPages, onPrev,
       
       {contacts.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-icon">📋</div>
+          <div className="empty-icon">📱</div>
           <p>No contacts found</p>
-          <small>Add a contact using the form above</small>
+          <small>Add your first contact using the form above</small>
         </div>
       ) : (
         <>
@@ -36,10 +36,10 @@ export default function ContactList({ contacts, page, total, totalPages, onPrev,
                 <div className="contact-info">
                   <div className="contact-name">{c.name}</div>
                   <div className="contact-details">
-                    <span className="contact-email">{c.email}</span>
+                    <span className="contact-email">📧 {c.email}</span>
                     <span className="separator">•</span>
                     <span className="contact-phone">
-                      {c.phone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')}
+                      📞 {c.phone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')}
                     </span>
                   </div>
                 </div>
@@ -48,6 +48,7 @@ export default function ContactList({ contacts, page, total, totalPages, onPrev,
                   disabled={deletingId === c._id}
                   className="delete-btn"
                   aria-label="Delete contact"
+                  title="Delete contact"
                 >
                   {deletingId === c._id ? (
                     <span className="mini-spinner"></span>
@@ -65,8 +66,9 @@ export default function ContactList({ contacts, page, total, totalPages, onPrev,
                 onClick={onPrev} 
                 disabled={page <= 1}
                 className="pagination-btn"
+                title="Previous page"
               >
-                Previous
+                ← Previous
               </button>
               
               <span className="page-numbers">
@@ -77,8 +79,9 @@ export default function ContactList({ contacts, page, total, totalPages, onPrev,
                 onClick={onNext} 
                 disabled={page >= totalPages}
                 className="pagination-btn"
+                title="Next page"
               >
-                Next
+                Next →
               </button>
             </div>
           )}
