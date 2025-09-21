@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react'
 import ContactForm from './components/ContactForm'
 import ContactList from './components/ContactList'
 
-const API_BASE = window.location.hostname === 'localhost'
-  ? 'http://localhost:5000/api'
-  : '/api'
+const API_BASE = import.meta.env.VITE_API_URL || 
+  (window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : '/api')
 
 export default function App() {
   const [contacts, setContacts] = useState([])
